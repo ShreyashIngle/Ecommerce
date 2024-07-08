@@ -10,9 +10,11 @@ const db_config = require("./configs/db.config");
 
 
 const user_model = require("./models/user.model");
-const { log } = require("console");
+
 
 const bcrypt = require("bcryptjs");
+
+app.use(express.json()); ///middleware
 
 /*
 create an admin user at the starting of the application
@@ -34,27 +36,37 @@ db.once("open", () => {
 })
 
 async function init() {
-  const existingAdmin = await user_model.findOne({ usertype: "admin" });
+  try{
+    let user  = await user_model.findOne({userId : "admin"})
 
-  if (existingAdmin) {
-    console.log("Admin already exists");
-    return;
-  }
+   if(user){
+      console.log("Admin is already present")
+      return
+    }
 
-  try {
-    const admin = await user_model.create({
-        name: "Shreyash",
-        userId: "admin",
-        email: "shreyashwork21@gmail.com",
-        usertype: "ADMIN", // Change to uppercase
-        password: bcrypt.hashSync("welcome1", 8),
-      });
-    console.log("Admin created successfully", admin);
-
-  } catch (error) {
-    console.error("Error while creating admin", error);
-  }
+}catch(err){
+    console.log("Error while reading the data", err)
 }
+
+
+try{
+  user = await user_model.create({
+    name : "Shreyashingle",
+    userId : "admin",
+    email : "shreyashwork21@gmail.com",
+    userType : "ADMIN",
+    password : bcrypt.hashSync("Welcome1",8)
+  })
+  console.log("Admin created ", user)
+
+
+}catch(err){
+    console.log("Error while create admin", err)
+}
+}
+
+
+require("./routes/auth.routes")(app);
 
 app.listen(server_config.PORT, () => {
   console.log("Server is running on port ", server_config.PORT);
