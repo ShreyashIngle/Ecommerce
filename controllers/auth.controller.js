@@ -3,7 +3,6 @@
  */
 const bcrypt = require("bcryptjs")
 const user_model = require("../models/user.model")
-const userModel = require("../models/user.model")
 exports.signup = async (req, res)=>{
     /**
      * Logic to create the user
